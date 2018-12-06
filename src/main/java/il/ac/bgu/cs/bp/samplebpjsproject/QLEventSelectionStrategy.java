@@ -7,10 +7,10 @@ import lombok.Setter;
 public class QLEventSelectionStrategy extends SimpleEventSelectionStrategy {
 
     @Getter @Setter
-    private MazeState mazeState;
+    private MazeWorld mazeWorld;
 
-    public QLEventSelectionStrategy(long seed, MazeState mazeState) {
+    public QLEventSelectionStrategy(long seed, MazeWorld mazeWorld) {
         super(seed);
-        this.mazeState = mazeState;
+        this.mazeWorld = mazeWorld;
     }
 }

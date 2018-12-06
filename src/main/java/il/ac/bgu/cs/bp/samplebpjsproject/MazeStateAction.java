@@ -19,4 +19,19 @@ public class MazeStateAction {
         this.y = y;
         this.action = action;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        MazeStateAction qObj = (MazeStateAction)obj;
+        return qObj.getX() == x && qObj.getY() == y && qObj.getAction().equals(action);
+    }
+
+    @Override
+    public String toString() {
+        return "MazeStateAction{" +
+                "x=" + x +
+                ", y=" + y +
+                ", action='" + action + '\'' +
+                '}';
+    }
 }

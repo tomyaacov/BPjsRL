@@ -17,11 +17,11 @@ var goal = [
     [4, 4]
 ];
 var not_regular = mine.concat(power, goal);
-var terminate = goal.concat(mine)
+var terminate = goal.concat(mine);
 
 bp.registerBThread( "initialize", function(){
-    mazeState.setX(0);
-    mazeState.setY(0);
+    mazeWorld.setX(0);
+    mazeWorld.setY(0);
 } );
 
 bp.registerBThread( "actions", function(){
@@ -34,23 +34,23 @@ bp.registerBThread( "move", function(){
     while (true){
         var e = bp.sync({ waitFor : bp.all });
         if(e.getName() == "Up") {
-            if (mazeState.getY() > 0) {
-                mazeState.setY(mazeState.getY() - 1);
+            if (mazeWorld.getY() > 0) {
+                mazeWorld.setY(mazeWorld.getY() - 1);
             }
         }
         if(e.getName() == "Down") {
-            if(mazeState.getY() < 5){
-                mazeState.setY(mazeState.getY()+1);
+            if(mazeWorld.getY() < 5){
+                mazeWorld.setY(mazeWorld.getY()+1);
             }
         }
         if(e.getName() == "Left") {
-            if(mazeState.getX() > 0){
-                mazeState.setX(mazeState.getX()-1);
+            if(mazeWorld.getX() > 0){
+                mazeWorld.setX(mazeWorld.getX()-1);
             }
         }
         if(e.getName() == "Right") {
-            if(mazeState.getX() < 6){
-                mazeState.setX(mazeState.getX()+1);
+            if(mazeWorld.getX() < 6){
+                mazeWorld.setX(mazeWorld.getX()+1);
             }
         }
         bp.sync({ request: bp.Event("updateDone"), block: MoveEventSet });
@@ -71,17 +71,17 @@ bp.registerBThread( "rewards", function(){
         bp.sync( {waitFor:bp.all} );
         bp.sync( {waitFor:bp.Event("updateDone")} );
 
-        if(isItemInArray(mine, [mazeState.getX(), mazeState.getY()])){
-            mazeState.insertReward(-100);
+        if(isItemInArray(mine, [mazeWorld.getX(), mazeWorld.getY()])){
+            mazeWorld.insertReward(-100);
         }
-        if(isItemInArray(power, [mazeState.getX(), mazeState.getY()])){
-            mazeState.insertReward(1);
+        if(isItemInArray(power, [mazeWorld.getX(), mazeWorld.getY()])){
+            mazeWorld.insertReward(1);
         }
-        if(isItemInArray(goal, [mazeState.getX(), mazeState.getY()])){
-            mazeState.insertReward(100);
+        if(isItemInArray(goal, [mazeWorld.getX(), mazeWorld.getY()])){
+            mazeWorld.insertReward(100);
         }
-        if(!isItemInArray(not_regular, [mazeState.getX(), mazeState.getY()])){
-            mazeState.insertReward(-1);
+        if(!isItemInArray(not_regular, [mazeWorld.getX(), mazeWorld.getY()])){
+            mazeWorld.insertReward(-1);
         }
 
     }
@@ -89,7 +89,7 @@ bp.registerBThread( "rewards", function(){
 
 bp.registerBThread( "terminate", function(){
     while (true){
-        if(isItemInArray(terminate, [mazeState.getX(), mazeState.getY()])){
+        if(isItemInArray(terminate, [mazeWorld.getX(), mazeWorld.getY()])){
             bp.sync( {block:bp.all} );
         } else {
             bp.sync( {waitFor:bp.all} );

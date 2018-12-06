@@ -8,12 +8,12 @@ import org.mozilla.javascript.Scriptable;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        MazeState mazeState = new MazeState();
-        MazeEventListener mazeEventListener = new MazeEventListener(mazeState);
+        MazeWorld mazeWorld = new MazeWorld(0.5, 0.5);
+        MazeEventListener mazeEventListener = new MazeEventListener(mazeWorld);
         // This will load the program file  <Project>/src/main/resources/HelloBPjsWorld.js
         final SingleResourceBProgram bprog = new SingleResourceBProgram("maze.js", "maze.js", new SimpleEventSelectionStrategy()){
             protected void setupProgramScope(Scriptable scope) {
-                putInGlobalScope("mazeState", mazeState);
+                putInGlobalScope("mazeWorld", mazeWorld);
                 super.setupProgramScope(scope);
             }
         };
@@ -25,5 +25,6 @@ public class Main {
 
         // go!
         rnr.run();
+        System.out.println(mazeWorld.getQTable());
     }
 }

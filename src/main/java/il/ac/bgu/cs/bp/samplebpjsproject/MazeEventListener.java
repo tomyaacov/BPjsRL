@@ -11,10 +11,21 @@ import lombok.Setter;
 public class MazeEventListener implements BProgramRunnerListener {
 
     @Getter @Setter
-    MazeState mazeState;
+    private MazeWorld mazeWorld;
 
-    public MazeEventListener(MazeState mazeState) {
-        this.mazeState = mazeState;
+    @Getter @Setter
+    private MazeStateAction lastState;
+
+    @Getter @Setter
+    private String currAction;
+
+    @Getter @Setter
+    private boolean firstTime;
+
+    public MazeEventListener(MazeWorld mazeWorld) {
+        this.mazeWorld = mazeWorld;
+        this.firstTime = true;
+
     }
 
     @Override
@@ -60,7 +71,16 @@ public class MazeEventListener implements BProgramRunnerListener {
     @Override
     public void eventSelected(BProgram bProgram, BEvent bEvent) {
         if (bEvent.getName().equals("updateDone")){
-            System.out.println(mazeState);
+            System.out.println(mazeWorld);
+        } else {
+            currAction = bEvent.getName();
+            if(firstTime){
+                lastState = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), currAction);
+                firstTime = false;
+            } else {
+                mazeWorld.updateQTable(lastState, currAction);
+                lastState = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), currAction);
+            }
         }
     }
 
