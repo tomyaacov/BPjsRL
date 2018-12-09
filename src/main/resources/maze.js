@@ -32,14 +32,14 @@ bp.registerBThread( "actions", function(){
 
 bp.registerBThread( "move", function(){
     while (true){
-        var e = bp.sync({ waitFor : bp.all });
+        var e = bp.sync({ waitFor : MoveEventSet });
         if(e.getName() == "Up") {
             if (mazeWorld.getY() > 0) {
                 mazeWorld.setY(mazeWorld.getY() - 1);
             }
         }
         if(e.getName() == "Down") {
-            if(mazeWorld.getY() < 5){
+            if(mazeWorld.getY() < 4){
                 mazeWorld.setY(mazeWorld.getY()+1);
             }
         }
@@ -49,7 +49,7 @@ bp.registerBThread( "move", function(){
             }
         }
         if(e.getName() == "Right") {
-            if(mazeWorld.getX() < 6){
+            if(mazeWorld.getX() < 5){
                 mazeWorld.setX(mazeWorld.getX()+1);
             }
         }
@@ -68,9 +68,6 @@ function isItemInArray(array, item) {
 
 bp.registerBThread( "rewards", function(){
     while (true){
-        bp.sync( {waitFor:bp.all} );
-        bp.sync( {waitFor:bp.Event("updateDone")} );
-
         if(isItemInArray(mine, [mazeWorld.getX(), mazeWorld.getY()])){
             mazeWorld.insertReward(-100);
         }
@@ -83,6 +80,11 @@ bp.registerBThread( "rewards", function(){
         if(!isItemInArray(not_regular, [mazeWorld.getX(), mazeWorld.getY()])){
             mazeWorld.insertReward(-1);
         }
+        bp.sync({ request: bp.Event("rewardUpdateDone"), block: MoveEventSet });
+        bp.sync( {waitFor:bp.all} );
+        bp.sync( {waitFor:bp.Event("updateDone")} );
+
+
 
     }
 } );
@@ -92,7 +94,8 @@ bp.registerBThread( "terminate", function(){
         if(isItemInArray(terminate, [mazeWorld.getX(), mazeWorld.getY()])){
             bp.sync( {block:bp.all} );
         } else {
-            bp.sync( {waitFor:bp.all} );
+            bp.sync( {waitFor:bp.Event("rewardUpdateDone")} );
+            bp.sync( {waitFor:MoveEventSet} );
             bp.sync( {waitFor:bp.Event("updateDone")} );
         }
     }

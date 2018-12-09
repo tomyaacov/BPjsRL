@@ -26,4 +26,10 @@ public class MazeState {
                 ", y=" + y +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        MazeState mObj = (MazeState)obj;
+        return mObj.getX() == x && mObj.getY() == y;
+    }
 }

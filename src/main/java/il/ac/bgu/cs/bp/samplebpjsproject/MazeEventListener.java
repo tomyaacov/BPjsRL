@@ -45,7 +45,21 @@ public class MazeEventListener implements BProgramRunnerListener {
 
     @Override
     public void ended(BProgram bProgram) {
+        MazeState endState = new MazeState(mazeWorld.getX(), mazeWorld.getY());
 
+        MazeStateAction up = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), "Up");
+        mazeWorld.getQTable().put(up.toString(), mazeWorld.getReward().get(endState.toString()));
+
+        MazeStateAction down = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), "Down");
+        mazeWorld.getQTable().put(down.toString(), mazeWorld.getReward().get(endState.toString()));
+
+        MazeStateAction left = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), "Left");
+        mazeWorld.getQTable().put(left.toString(), mazeWorld.getReward().get(endState.toString()));
+
+        MazeStateAction right = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), "Right");
+        mazeWorld.getQTable().put(right.toString(), mazeWorld.getReward().get(endState.toString()));
+
+        mazeWorld.updateQTable(lastState, currAction);
     }
 
     @Override
@@ -73,13 +87,15 @@ public class MazeEventListener implements BProgramRunnerListener {
         if (bEvent.getName().equals("updateDone")){
             System.out.println(mazeWorld);
         } else {
-            currAction = bEvent.getName();
-            if(firstTime){
-                lastState = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), currAction);
-                firstTime = false;
-            } else {
-                mazeWorld.updateQTable(lastState, currAction);
-                lastState = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), currAction);
+            if (!bEvent.getName().equals("rewardUpdateDone")){
+                currAction = bEvent.getName();
+                if(firstTime){
+                    lastState = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), currAction);
+                    firstTime = false;
+                } else {
+                    mazeWorld.updateQTable(lastState, currAction);
+                    lastState = new MazeStateAction(mazeWorld.getX(), mazeWorld.getY(), currAction);
+                }
             }
         }
     }
